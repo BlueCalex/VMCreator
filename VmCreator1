@@ -1,0 +1,54 @@
+###########################################################
+#  Calebs Hyper-V Vm Creator                              #
+#  11/10/2019                                             #
+###########################################################
+
+
+
+#Prompts User for the VM Name
+
+$vmname = Read-Host -Prompt 'Enter the Name of the VM'
+
+$vhdPath = Read-Host "Enter path where .vhdx will reside (Ex E:\VHD\)"
+[string]$newVHD = $vhdPath+$VMName+".vhdx"
+
+
+#Prompts User for the VM Generation
+
+$vmgen = Read-Host -Prompt 'What Generation should it be? (1 Or 2)'
+
+#Prompts The User for the Memory Size in MB
+
+[int64]$memory = Read-Host -Prompt "Memory (MB)"
+
+    #Converts the Memory into MB
+    $memory = 1MB*$memory
+
+#Asks the User for the VHDSize
+
+[int64]$vhdSize = Read-Host "Enter VHDSize (GB)"
+
+$vhdSize = [math]::round($vhdSize *1Gb, 3) #converts GB to bytes
+
+#PRompts The User for How Many Processors they would like
+
+$processorcount = Read-Host -Prompt 'How Many Processors?'
+
+#Creates the VM with the Name, Generation and Memory
+
+New-VM -Name $vmname -Generation $VmGen -MemoryStartupBytes $memory
+
+#Creates the VHD With the VHD path Name and Size
+
+New-VHD -Fixed -Path $newVHD -SizeBytes $vhdSize
+
+#Attaches the VHD to the VM
+
+add-VMHardDiskDrive -VMName $vmname -Path $newVHD
+
+#Sets the Processors that the User asked for
+
+Set-VMProcessor $vmname -Count $processorcount
+
+
+
